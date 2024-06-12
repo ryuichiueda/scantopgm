@@ -20,12 +20,12 @@ fn read_yaml(text: &mut String) {
     }
 }
 
-fn make_filename(header: &Yaml) -> Option<String> {
-    let sec = match header["stamp"]["sec"] {
+fn make_filename(stamp: &Yaml) -> Option<String> {
+    let sec = match stamp["sec"] {
         Integer(n) => n,
         _          => return None,
     };
-    let nsec = match header["stamp"]["nanosec"] {
+    let nsec = match stamp["nanosec"] {
         Integer(n) => n,
         _          => return None,
     };
@@ -40,7 +40,7 @@ fn to_file() -> bool {
     let data = YamlLoader::load_from_str(&text).unwrap();
     let header = &data[0]["header"];
 
-    let filename = make_filename(&header);
+    let filename = make_filename(&header["stamp"]);
     dbg!("{:?}", &filename);
     true
 }
