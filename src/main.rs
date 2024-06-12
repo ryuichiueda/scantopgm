@@ -2,9 +2,8 @@
 //SPDX-License-Identifier: BSD-3-Clause
 
 use std::io;
-use yaml_rust::YamlLoader;
-use yaml_rust::Yaml;
-use yaml_rust::Yaml::Integer;
+use yaml_rust::{Yaml, YamlLoader};
+use yaml_rust::Yaml::{Array, Integer, Real};
 
 fn read_yaml(text: &mut String) {
     loop {
@@ -37,11 +36,44 @@ fn make_filename(stamp: &Yaml) -> Option<String> {
 fn to_file() -> bool {
     let mut text = String::new();
     read_yaml(&mut text);
-    let data = YamlLoader::load_from_str(&text).unwrap();
-    let header = &data[0]["header"];
+    let data_array = YamlLoader::load_from_str(&text).unwrap();
+    let data = &data_array[0];
 
-    let filename = make_filename(&header["stamp"]);
+    let filename = match make_filename(&data["header"]["stamp"]) {
+        Some(name) => name,
+        _          => return false,
+    };
     dbg!("{:?}", &filename);
+
+    let angle_min = match &data["angle_min"] {
+        Real(x) => x.parse::<f64>().expect("scantopgm: invalid data"),
+        _       => return false,
+    };
+    let angle_step_width = match &data["angle_increment"] {
+        Real(x) => x.parse::<f64>().expect("scantopgm: invalid data"),
+        _       => return false,
+    };
+
+    let ranges = match &data["ranges"] {
+        Array(a) => a,
+        _       => return false,
+    };
+
+    let mut direction = angle_min;
+    /* x-axis: front, y-axis: left */
+    for r in ranges {
+        match r {
+            Real(distance) => {
+                if let Ok(d) = distance.parse::<f64>() {
+                    let x = f64::cos(direction)*d;
+                    let y = f64::sin(direction)*d;
+                    eprintln!("{}, {}", x, y);
+                }
+            },
+            _ => {},
+        }
+        direction += angle_step_width;
+    }
     true
 }
 
