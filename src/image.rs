@@ -1,6 +1,8 @@
 //SPDX-FileCopyrightText: 2024 Ryuichi Ueda ryuichiueda@gmail.com
 //SPDX-License-Identifier: BSD-3-Clause
 
+use std::collections::HashMap;
+
 pub struct Image {
     pub x_max: f64, //upper edge of image
     pub x_min: f64, //bottom edge of image
@@ -10,6 +12,7 @@ pub struct Image {
     pub width: usize,
     pub x_step: f64,
     pub y_step: f64,
+    pub data: HashMap<(i32, i32), i32>,
 }
 
 impl Image {
@@ -24,6 +27,14 @@ impl Image {
             width: width,
             x_step: (x_max - x_min)/(height as f64),
             y_step: (y_max - y_min)/(width as f64),
+            data: HashMap::new(),
         }
+    }
+
+    pub fn pos_to_pixel(&self, x: f64, y: f64) -> (i32, i32) {
+        let px = (self.x_max - x)/(self.x_max - self.x_min)*(self.height as f64);
+        let py = (self.y_max - y)/(self.y_max - self.y_min)*(self.width as f64);
+
+        (px as i32, py as i32)
     }
 }
