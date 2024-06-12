@@ -4,10 +4,15 @@
 use std::io;
 
 fn main() {
-    let mut line = String::new();
-    let len = io::stdin()
-              .read_line(&mut line)
-               .expect("scantopgm: Failed to read line");
-
-    eprintln!("{:?}", &line);
+    loop {
+        let mut line = String::new();
+        let len = io::stdin()
+                .read_line(&mut line)
+                .expect("scantopgm: Failed to read line");
+    
+        if len == 0 {
+            break;
+        }
+        eprintln!("{:?}", &line);
+    }
 }
