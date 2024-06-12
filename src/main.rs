@@ -80,6 +80,7 @@ fn to_file() -> bool {
         }
         direction += angle_step_width;
     }
+    dbg!("{:?}", &image.data);
     true
 }
 
