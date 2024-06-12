@@ -19,7 +19,7 @@ fn read_yaml(text: &mut String) {
     }
 }
 
-fn main() {
+fn to_file() -> bool {
     let mut text = String::new();
     read_yaml(&mut text);
     let data = YamlLoader::load_from_str(&text).unwrap();
@@ -27,14 +27,19 @@ fn main() {
 
     let sec = match header["stamp"]["sec"] {
         Integer(n) => n,
-        _ => panic!("scantopgm: No timestamp"),
+        _          => return false,
     };
 
     let nsec = match header["stamp"]["nanosec"] {
         Integer(n) => n,
-        _ => panic!("scantopgm: No timestamp"),
+        _          => return false,
     };
 
-    let filename = format!("{}.{:09}", &sec, &nsec);
+    let filename = format!("{}.{:09}.pgm", &sec, &nsec);
     dbg!("{:?}", &filename);
+    true
+}
+
+fn main() {
+    to_file();
 }
