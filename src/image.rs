@@ -37,4 +37,18 @@ impl Image {
 
         (px as i32, py as i32)
     }
+
+    pub fn pgm_out(&self) {
+        for x in 0..self.height {
+            for y in 0..self.width {
+                let v = match self.data.get( &(x as i32, y as i32) ) {
+                    Some(v) => *v,
+                    None    => 0,
+                };
+
+                print!("{} ", v);
+            }
+            print!("\n");
+        }
+    }
 }
