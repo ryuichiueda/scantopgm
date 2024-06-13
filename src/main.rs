@@ -40,6 +40,10 @@ fn to_file() -> bool {
     let mut text = String::new();
     read_yaml(&mut text);
     let data_array = YamlLoader::load_from_str(&text).unwrap();
+    if data_array.len() == 0 {
+        return false;
+    }
+
     let data = &data_array[0];
 
     let filename = match make_filename(&data["header"]["stamp"]) {
@@ -80,10 +84,10 @@ fn to_file() -> bool {
         }
         direction += angle_step_width;
     }
-    image.pgm_out();
+    image.pgm_out(&filename);
     true
 }
 
 fn main() {
-    to_file();
+    while to_file() { }
 }

@@ -2,6 +2,8 @@
 //SPDX-License-Identifier: BSD-3-Clause
 
 use std::collections::HashMap;
+use std::fs::File;
+use std::io::{BufWriter, Write};
 
 pub struct Image {
     pub x_max: f64, //upper edge of image
@@ -38,8 +40,10 @@ impl Image {
         (px as i32, py as i32)
     }
 
-    pub fn pgm_out(&self) {
-        println!("P2\n{} {}\n255", self.width, self.height);
+    pub fn pgm_out(&self, filename: &str) {
+        let mut file = BufWriter::new(File::create(&filename).unwrap());
+
+        file.write(format!("P2\n{} {}\n255\n", self.width, self.height).as_bytes()).unwrap();
 
         for x in 0..self.height {
             for y in 0..self.width {
@@ -48,9 +52,9 @@ impl Image {
                     None    => 0,
                 };
 
-                print!("{} ", v);
+                file.write(format!("{} ", v).as_bytes()).unwrap();
             }
-            print!("\n");
+            file.write("\n".as_bytes()).unwrap();
         }
     }
 }
