@@ -34,8 +34,13 @@ impl Image {
     }
 
     pub fn normalize(&mut self) {
-        //dbg!("{:?}", &std::cmp::max(self.data.values());
-        dbg!("{:?}", &self.data.values().max());
+        let max_ref = self.data.values().max().unwrap();
+        let max = *max_ref;
+        for e in &mut self.data {
+            let val = (*e.1 as f64)/(max as f64) * 255.0;
+            *e.1 = val as i32;
+            //self.data.insert(*e.0, val as i32);
+        }
 
     }
 
