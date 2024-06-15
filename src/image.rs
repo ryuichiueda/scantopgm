@@ -43,7 +43,7 @@ impl Image {
 
     pub fn binarize(&mut self, threshold: i32) {
         for e in &mut self.data {
-            let val = if *e.1 > threshold {
+            let val = if *e.1 >= threshold {
                 255
             }else{
                 0

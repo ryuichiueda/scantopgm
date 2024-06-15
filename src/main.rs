@@ -106,6 +106,6 @@ fn main() {
         width, height, &mut fixed_vote){}
 
     fixed_vote.normalize();
-    fixed_vote.binarize(10);
+    fixed_vote.binarize(1);
     fixed_vote.pgm_out("/tmp/fixed.pgm");
 }
