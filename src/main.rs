@@ -37,7 +37,7 @@ fn make_filename(stamp: &Yaml) -> Option<String> {
 }
 
 fn to_file(x_min: f64, x_max: f64, y_min: f64, y_max: f64,
-       width: usize, height: usize) -> bool {
+       width: usize, height: usize, fixed_vote: &mut Image) -> bool {
     let mut text = String::new();
     read_yaml(&mut text);
     let data_array = YamlLoader::load_from_str(&text).unwrap();
@@ -79,6 +79,11 @@ fn to_file(x_min: f64, x_max: f64, y_min: f64, y_max: f64,
 
                     let pix_pos = image.pos_to_pixel(x, y);
                     image.data.insert(pix_pos, 255);
+
+                    match fixed_vote.data.get(&pix_pos) {
+                        Some(v) => fixed_vote.data.insert(pix_pos, v+1),
+                        None    => fixed_vote.data.insert(pix_pos, 1),
+                    };
                 }
             },
             _ => {},
@@ -95,6 +100,10 @@ fn main() {
     let width = args[5].parse::<usize>().unwrap();
     let height = args[6].parse::<usize>().unwrap();
 
+    let mut fixed_vote = Image::new(ranges[0], ranges[1], ranges[2], ranges[3], width, height);
+
     while to_file(ranges[0], ranges[1], ranges[2], ranges[3],
-        width, height){}
+        width, height, &mut fixed_vote){}
+
+    fixed_vote.pgm_out("/dev/stdout");
 }
