@@ -4,7 +4,7 @@
 mod image;
 
 use crate::image::Image;
-use std::io;
+use std::{env, io};
 use yaml_rust::{Yaml, YamlLoader};
 use yaml_rust::Yaml::{Array, Integer, Real};
 
@@ -36,7 +36,8 @@ fn make_filename(stamp: &Yaml) -> Option<String> {
     Some(filename)
 }
 
-fn to_file() -> bool {
+fn to_file(x_min: f64, x_max: f64, y_min: f64, y_max: f64,
+       width: usize, height: usize) -> bool {
     let mut text = String::new();
     read_yaml(&mut text);
     let data_array = YamlLoader::load_from_str(&text).unwrap();
@@ -66,7 +67,7 @@ fn to_file() -> bool {
         _       => return false,
     };
 
-    let mut image = Image::new(-6.0, 6.0, -6.0, 6.0, 1200, 1200);
+    let mut image = Image::new(x_min, x_max, y_min, y_max, width, height);
     let mut direction = angle_min;
     /* x-axis: front, y-axis: left */
     for r in ranges {
@@ -89,5 +90,11 @@ fn to_file() -> bool {
 }
 
 fn main() {
-    while to_file() { }
+    let args: Vec<String> = env::args().map(|a| a.to_string()).collect();
+    let ranges: Vec<f64> = args[1..5].iter().map(|n| n.parse::<f64>().unwrap()).collect();
+    let width = args[5].parse::<usize>().unwrap();
+    let height = args[6].parse::<usize>().unwrap();
+
+    while to_file(ranges[0], ranges[1], ranges[2], ranges[3],
+        width, height){}
 }
