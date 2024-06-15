@@ -34,14 +34,22 @@ impl Image {
     }
 
     pub fn normalize(&mut self) {
-        let max_ref = self.data.values().max().unwrap();
-        let max = *max_ref;
+        let max = *self.data.values().max().unwrap();
         for e in &mut self.data {
             let val = (*e.1 as f64)/(max as f64) * 255.0;
             *e.1 = val as i32;
-            //self.data.insert(*e.0, val as i32);
         }
+    }
 
+    pub fn binarize(&mut self, threshold: i32) {
+        for e in &mut self.data {
+            let val = if *e.1 > threshold {
+                255
+            }else{
+                0
+            };
+            *e.1 = val;
+        }
     }
 
     pub fn pos_to_pixel(&self, x: f64, y: f64) -> (i32, i32) {
