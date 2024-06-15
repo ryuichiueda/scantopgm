@@ -33,6 +33,12 @@ impl Image {
         }
     }
 
+    pub fn normalize(&mut self) {
+        //dbg!("{:?}", &std::cmp::max(self.data.values());
+        dbg!("{:?}", &self.data.values().max());
+
+    }
+
     pub fn pos_to_pixel(&self, x: f64, y: f64) -> (i32, i32) {
         let px = (self.x_max - x)/(self.x_max - self.x_min)*(self.height as f64);
         let py = (self.y_max - y)/(self.y_max - self.y_min)*(self.width as f64);

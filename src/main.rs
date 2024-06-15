@@ -105,5 +105,6 @@ fn main() {
     while to_file(ranges[0], ranges[1], ranges[2], ranges[3],
         width, height, &mut fixed_vote){}
 
-    fixed_vote.pgm_out("/dev/stdout");
+    fixed_vote.normalize();
+    //fixed_vote.pgm_out("/dev/stdout");
 }
